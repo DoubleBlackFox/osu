@@ -1,4 +1,4 @@
- /*
+/*
         parametrz
 function tomas(item, item2){
 console.log("nesu "+ item + "," + item2);    
@@ -50,15 +50,57 @@ console.log(rresult)*/
 
 const point = document.getElementById("point");
 const start = document.getElementById("start");
+const showTime = document.getElementById("showTime");
+let gameInterval;
+let gameIntervalSpeed = 3000;
+let gameStart;
 
 start.onclick = () => {
   start.style.display = "none";
-  moveElement(point, 300,200)
+  moveElement(
+    point,
+    getRandomNuber(0, window.innerWidth - 85),
+    getRandomNuber(0, window.innerHeight - 85)
+  );
+  setPointOnClick(point);
+  setGameInterval(point);
+  gameStart = performance.now();
+};
 
-}
+const setPointOnClick = (elemnet) => {
+  elemnet.onclick = () => {
+    let gameEnd = performance.now();
+    let time = gameEnd - gameStart;
+    showTime.innerText = `Time: ${time}ms`;
+    gameStart = gameEnd;
+    elemnet.innerText++;
+    if (gameIntervalSpeed > 300) {
+      gameIntervalSpeed -= 200;
+      setGameInterval(elemnet);
+    }
+    moveElement(
+      elemnet,
+      getRandomNuber(0, window.innerWidth - 85),
+      getRandomNuber(0, window.innerHeight - 85)
+    );
+  };
+};
 
-const moveElement = (elemnet, x, y) =>{
-elemnet.style.top = y + "px";
-elemnet.style.left = x + "px"
-}
+const moveElement = (elemnet, x, y) => {
+  elemnet.style.top = y + "px";
+  elemnet.style.left = x + "px";
+};
 
+const setGameInterval = (elemnet) => {
+  clearInterval(gameInterval);
+  gameInterval = setInterval(() => {
+    moveElement(
+      elemnet,
+      getRandomNuber(0, window.innerWidth - 85),
+      getRandomNuber(0, window.innerHeight - 85)
+    );
+  }, gameIntervalSpeed);
+};
+
+const getRandomNuber = (minimum, maximum) =>
+  Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
